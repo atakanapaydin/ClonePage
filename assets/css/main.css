@@ -1188,14 +1188,12 @@ section.usps-container {
   height: 550px;
   display: flex;
   margin-top: 135px;
+  background-color: #194b93;
 }
 @media only screen and (max-width: 1024px) {
   section.usps-container {
     display: none;
   }
-}
-section.usps-container .image-container {
-  width: 50%;
 }
 section.usps-container .image-container img {
   width: 100%;
@@ -1210,7 +1208,6 @@ section.usps-container .content-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  background-color: #194b93;
 }
 section.usps-container .content-container .usps-details {
   position: relative;

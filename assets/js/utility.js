@@ -1,115 +1,6 @@
 var MODULES = MODULES || {};
 MODULES.Utility = {};
 
-MODULES.Utility.Accordion = (function ($) {
-
-    var info = "Acordion";
-    var _self = this;
-    var _options = {
-        OnlyOneOpen: true,
-        openAndScroll: true,
-    }
-
-    function init() {
-        buildCache();
-        eventListener();
-        accinit();
-    }
-
-    function buildCache() {
-        _self.$accordion = $(".acc"),
-            _self.$button = $(".acc>:first-child"),
-            _self.$content = $(".acc-content")
-    }
-
-    function eventListener() {
-        $(document).on("click", ".acc>:first-child", toggleAccordion);
-    }
-
-
-    function accinit() {
-        var count = 0;
-        _self.$button.each(function (k, l) {
-            count++;
-            var accInacc = $(this).parents(".acc-content").find(".acc").length > 0 ? true : false;
-            var acc = $(this).closest(".acc");
-
-            if (accInacc == true) {
-                acc.parents(".acc").addClass("parentAcc");
-            }
-            acc.attr("data-id", slugify($(this).text()));
-            acc.find(".acc-content").attr({
-                "id": "content-" + count,
-                "aria-labelledby": "accordion1",
-                "role": "tabpanel",
-                "aria-hidden": "true"
-            });
-
-            $(this).wrapInner("<button role='tab' type='button' id='acc-" + count + "' aria-expanded='false' aria-controls='content-" + count + "'></button>");
-
-            if (acc.hasClass("active")) {
-                acc.find(".acc-content").attr("aria-hidden", "false");
-                acc.find("#acc-" + count).attr("aria-expanded", "true");
-            }
-        })
-    }
-
-    function toggleAccordion() {
-        var _self = {
-            button: $(this).find("button"),
-            parent: $(this).closest(".acc").parent(),
-            content: $(this).parent().find(".acc-content").first(),
-            expandedStatus: $(this).find("button").attr("aria-expanded")
-        }
-
-        if (_options.OnlyOneOpen && !$(this).parent().hasClass('active')) {
-            allAccClose(_self);
-        }
-
-        _self.content.slideToggle(function () {
-            $(this).closest(".acc").toggleClass("active");
-
-            $(this).parents('.box').addClass("border-radius-reset");
-            var box = $(this);
-            setTimeout(function () {
-                box.parents('.box').removeClass("border-radius-reset");
-            },
-                1);
-        });
-
-        accessibility(_self);
-
-        if (_options.openAndScroll) {
-            setTimeout(function () {
-                $('html,body').animate({
-                    scrollTop: _self.button.offset().top - 200
-                }, 'swing');
-            }, 300);
-        }
-
-        return false;
-    }
-
-    function accessibility(_self) {
-
-        if (_self.expandedStatus === "true") {
-            _self.button.attr("aria-expanded", "false");
-            _self.content.attr("aria-hidden", "true");
-        } else {
-            _self.button.attr("aria-expanded", "true");
-            _self.content.attr("aria-hidden", "false");
-        }
-    }
-
-    function allAccClose(_self) {
-        _self.parent.find('.acc').removeClass('active');
-        _self.parent.find('.acc button').attr("aria-expanded", "false");
-        _self.parent.find('.acc').find(".acc-content").slideUp().attr("aria-hidden", "true");
-    }
-    return init;
-
-})(jQuery);
-
 MODULES.Utility.HeaderMenu = (function ($) {
     
         var info = "Header Menu";
@@ -321,8 +212,10 @@ MODULES.Utility.BrandMenu = (function ($) {
         _self.$tabTitle.on('mouseenter', openTab);
         _self.$tabTitleTwo.on('mouseenter', openTabTwo);
         $('#brand-tabs-nav li:first-child').addClass('active');
+        $('#brand-tabs-nav li:first-child a').addClass('active');
         $('#brand-tabs-nav-two li:first-child').addClass('active');
-        $('.brand-tabs-content').hide();
+        $('#brand-tabs-nav-two li:first-child a').addClass('active');
+        $tabContent.hide();
         $('.brand-tabs-content:first-child').addClass('active');
     }
 
@@ -332,8 +225,8 @@ MODULES.Utility.BrandMenu = (function ($) {
         $tabTitle.find('a').removeClass('active');
         list.addClass('active');
         list.find('a').addClass('active');
-        $("#tabs-content .brand-tabs-content").removeClass('active');
-        $("#tabs-content .brand-tabs-content").hide();
+        $tabContent.removeClass('active');
+        $tabContent.hide();
 
         var activeTab = list.find('a').attr('data-order');
         $('#'+activeTab).fadeIn();
@@ -419,9 +312,8 @@ MODULES.Utility.EventListeners = (function ($) {
 
 $(function () {
     $(window).on('load', function(){
-        MODULES.Utility.Accordion();
-        MODULES.Utility.BrandMenu();
         MODULES.Utility.HeaderMenu();
+        MODULES.Utility.BrandMenu();
         MODULES.Utility.OwlCarousel();
         MODULES.Utility.EventListeners();
     })
